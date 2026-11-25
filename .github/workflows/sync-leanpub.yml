@@ -72,17 +72,51 @@ jobs:
           echo "syncing: ${slugs:-<nothing>}"
           echo "slugs=${slugs}" >> $GITHUB_OUTPUT
 
+      - name: check the token before trying to push
+        if: env.SYNC_TOKEN != '' && steps.changed.outputs.slugs != ''
+        run: |
+          set -uo pipefail
+          fail=0
+          for slug in ${{ steps.changed.outputs.slugs }}; do
+            target=$(python -c "import yaml; print(yaml.safe_load(open(f'books/${slug}/meta.yml'))['leanpub_repo'])")
+            code=$(curl -s -o resp.json -w '%{http_code}' \
+              -H "Authorization: Bearer ${SYNC_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${target}")
+            if [ "$code" != "200" ]; then
+              echo "::error::Token cannot read ${target} (HTTP ${code}). The stored"\
+                   "LEANPUB_SYNC_TOKEN is invalid, expired, or was pasted incompletely."
+              fail=1
+              continue
+            fi
+            can_push=$(python -c "import json; print(json.load(open('resp.json')).get('permissions',{}).get('push'))")
+            if [ "$can_push" != "True" ]; then
+              echo "::error::Token can read ${target} but not write to it. Set"\
+                   "Repository permissions -> Contents to Read and write."
+              fail=1
+            else
+              echo "${target}: token OK, push permitted"
+            fi
+          done
+          rm -f resp.json
+          exit $fail
+
       - name: push each changed manuscript to its thin repo
         if: env.SYNC_TOKEN != '' && steps.changed.outputs.slugs != ''
         run: |
           set -euo pipefail
+          # Basic-auth header rather than credentials in the remote URL: this is what
+          # actions/checkout does, it works with fine-grained PATs, and it keeps the
+          # token out of .git/config and the reflog.
+          AUTH="AUTHORIZATION: basic $(printf 'x-access-token:%s' "${SYNC_TOKEN}" | base64 -w0)"
+
           for slug in ${{ steps.changed.outputs.slugs }}; do
-            target=$(python -c "import yaml,sys; print(yaml.safe_load(open(f'books/${slug}/meta.yml'))['leanpub_repo'])")
+            target=$(python -c "import yaml; print(yaml.safe_load(open(f'books/${slug}/meta.yml'))['leanpub_repo'])")
             echo "::group::${slug} -> ${target}"
 
             rm -rf _sync
-            git clone --quiet --depth 1 \
-              "https://x-access-token:${SYNC_TOKEN}@github.com/${target}.git" _sync \
+            git -c http.extraheader="${AUTH}" clone --quiet --depth 1 \
+              "https://github.com/${target}.git" _sync \
               || { mkdir _sync && git -C _sync init --quiet -b main; }
 
             # Replace wholesale so deletions propagate. The sidecars are dev.to
@@ -99,8 +133,8 @@ jobs:
               echo "no changes"
             else
               git -C _sync commit --quiet -m "sync ${slug} from ${GITHUB_SHA::7}"
-              git -C _sync push --quiet \
-                "https://x-access-token:${SYNC_TOKEN}@github.com/${target}.git" main
+              git -C _sync -c http.extraheader="${AUTH}" push --quiet \
+                "https://github.com/${target}.git" main
               echo "pushed"
             fi
             echo "::endgroup::"
