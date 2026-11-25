@@ -6,7 +6,9 @@
     "ChromaDB", "FAISS", "embeddings", "tokenizer", "tokenizers", "RAG",
     "Anthropic", "OpenAI", "Azure", "Kubernetes", "FastAPI", "pydantic",
     "Makineni", "Sridhar", "devto", "frontmatter", "pandoc", "lychee",
-    "cspell", "markdownlint", "multimodal", "agentic", "chunking", "reranking"
+    "cspell", "markdownlint", "multimodal", "agentic", "chunking", "reranking",
+    "aiapprentice", "sridharmakineni", "overfitting", "underfitting",
+    "pretrain", "pretrained", "finetune", "timespec", "lycheeverse"
   ],
   "ignorePaths": ["node_modules/**", ".git/**", "*.json", "progress.json"]
 }
