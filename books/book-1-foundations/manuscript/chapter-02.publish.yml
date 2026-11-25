@@ -1,0 +1,11 @@
+# dev.to publishing metadata. Kept out of the manuscript so Leanpub sees clean Markdown.
+# Set published: true only when the chapter is edited and ready.
+
+title: "Python for AI"
+series: "AI Apprentice"
+tags: [python,beginners,ai,career]
+published: false
+devto: true
+
+# Empty until a site exists -- pointing this at a 404 hands away the SEO.
+canonical_url: ""
