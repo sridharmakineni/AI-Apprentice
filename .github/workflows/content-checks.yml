@@ -1,0 +1,50 @@
+name: content checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: markdown lint
+        uses: DavidAnson/markdownlint-cli2-action@v16
+        with:
+          globs: |
+            **/*.md
+            !node_modules
+
+      - name: spell check
+        uses: streetsidesoftware/cspell-action@v6
+        with:
+          incremental_files_only: false
+
+      - name: link rot
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --no-progress --max-retries 2 --accept 200,206,429 './**/*.md'
+          fail: true
+
+  wordcount:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r tools/requirements.txt
+      - name: gate status
+        run: python tools/gate_check.py || true
+      - name: manuscript size
+        run: |
+          echo "### Manuscript" >> $GITHUB_STEP_SUMMARY
+          echo "| Book | Words |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          for book in books/*/; do
+            words=$(cat "$book"manuscript/*.md 2>/dev/null | wc -w)
+            echo "| $(basename "$book") | $words |" >> $GITHUB_STEP_SUMMARY
+          done

@@ -1,0 +1,184 @@
+week: 1
+title: "Week 1 — What is AI?"
+pass_score: 80
+
+questions:
+  - q: "What is the relationship between AI, machine learning and deep learning?"
+    options:
+      a: "Three names for the same thing"
+      b: "Deep learning contains machine learning, which contains AI"
+      c: "AI contains machine learning, which contains deep learning"
+      d: "They are unrelated fields that happen to overlap"
+    answer: c
+    why: "AI is the widest field. ML is the subset that learns from data. Deep learning is the subset of ML using many-layered neural networks."
+
+  - q: "A rules engine routes expense claims over $5,000 to a manager. Is this AI?"
+    options:
+      a: "Yes — it makes decisions automatically"
+      b: "No — the rule was written by a person, nothing was learned from data"
+      c: "Yes, but only if the threshold changes over time"
+      d: "Only if it runs in the cloud"
+    answer: b
+    why: "Automation follows rules a human wrote. ML derives the rule from data. Most AI in enterprise software is still the former — worth knowing which you are actually buying."
+
+  - q: "What defines generative AI specifically?"
+    options:
+      a: "It runs on a GPU"
+      b: "It produces new content rather than only classifying or predicting"
+      c: "It is always larger than one billion parameters"
+      d: "It requires an internet connection"
+    answer: b
+    why: "A spam classifier predicts a label. A generative model produces new text, images, code or audio."
+
+  - q: "Which is a discriminative task rather than a generative one?"
+    options:
+      a: "Drafting a project status email"
+      b: "Summarizing a contract"
+      c: "Deciding whether an invoice is a duplicate"
+      d: "Producing a product image from a description"
+    answer: c
+    why: "Duplicate detection outputs a decision over existing data. The others produce new content."
+
+  - q: "What distinguishes an AI agent from a plain chatbot?"
+    options:
+      a: "An agent uses a larger model"
+      b: "An agent can reason, call tools and take actions, not just reply"
+      c: "An agent always runs without a user interface"
+      d: "An agent is trained on private company data"
+    answer: b
+    why: "The defining feature is the loop: observe, reason, act via tools, observe the result. A chatbot replies and stops."
+
+  - q: "Supervised learning requires what that unsupervised learning does not?"
+    options:
+      a: "A neural network"
+      b: "Labelled examples"
+      c: "A cloud GPU"
+      d: "More than a million rows"
+    answer: b
+    why: "Supervised learning learns a mapping from inputs to known labels. Unsupervised learning finds structure in unlabelled data."
+
+  - q: "Grouping customers into segments with no predefined categories is which kind of learning?"
+    options:
+      a: "Supervised — classification"
+      b: "Supervised — regression"
+      c: "Unsupervised — clustering"
+      d: "Reinforcement learning"
+    answer: c
+    why: "No labels exist beforehand; the algorithm discovers the groupings itself."
+
+  - q: "Predicting next quarter's support ticket volume as a number is:"
+    options:
+      a: "Classification"
+      b: "Regression"
+      c: "Clustering"
+      d: "Generation"
+    answer: b
+    why: "A continuous numeric output is regression. A category output would be classification."
+
+  - q: "What makes deep learning deep?"
+    options:
+      a: "The depth of the training data"
+      b: "Many layers in the neural network"
+      c: "It understands meaning rather than patterns"
+      d: "It is trained for a long time"
+    answer: b
+    why: "Depth refers to the number of layers. Each layer learns features built on the previous layer's output."
+
+  - q: "A model performs excellently on training data and poorly on new data. This is:"
+    options:
+      a: "Underfitting"
+      b: "Overfitting"
+      c: "Hallucination"
+      d: "Data drift"
+    answer: b
+    why: "The model memorized the training set, including its noise, instead of learning patterns that generalize."
+
+  - q: "What is a foundation model?"
+    options:
+      a: "The first model a company deploys"
+      b: "A large model pretrained broadly, then adapted to many downstream tasks"
+      c: "A model that runs on-premises"
+      d: "The base layer of a neural network"
+    answer: b
+    why: "Pretrain once at great cost, then adapt cheaply many times. This is why you will almost never train your own model."
+
+  - q: "An LLM confidently states a policy detail that does not exist. This is best called:"
+    options:
+      a: "Overfitting"
+      b: "A hallucination"
+      c: "Data drift"
+      d: "A prompt injection"
+    answer: b
+    why: "The model generates plausible-sounding content that is not grounded in fact. Grounding techniques such as RAG exist to reduce this."
+
+  - q: "Why is hallucination an intrinsic property rather than a bug to be patched?"
+    options:
+      a: "The training data always contains errors"
+      b: "The model predicts likely next tokens, which is not the same as retrieving verified facts"
+      c: "The temperature setting is never zero"
+      d: "Hallucination only happens in smaller models"
+    answer: b
+    why: "Fluency and factuality are different objectives. The model optimizes for plausible continuation, so grounding must be added from outside."
+
+  - q: "Which task is the weakest fit for generative AI today?"
+    options:
+      a: "Drafting a first-pass job description"
+      b: "Summarizing a long meeting transcript"
+      c: "Calculating exact payroll deductions for 4,000 employees"
+      d: "Rewriting technical content for a non-technical audience"
+    answer: c
+    why: "Exact, auditable arithmetic over structured data belongs in deterministic code. Use the model to decide what to compute, not to compute it."
+
+  - q: "What is reinforcement learning's defining mechanism?"
+    options:
+      a: "Learning from labelled examples"
+      b: "Learning by trial and error guided by rewards"
+      c: "Clustering similar inputs"
+      d: "Compressing data into fewer dimensions"
+    answer: b
+    why: "An agent acts in an environment and adjusts behaviour based on reward signals rather than labelled answers."
+
+  - q: "Why does the word AI in a vendor's product description tell you almost nothing?"
+    options:
+      a: "Vendors are legally barred from giving specifics"
+      b: "The term spans everything from if-statements to frontier models"
+      c: "AI products are all built on the same model"
+      d: "The term refers only to research systems"
+    answer: b
+    why: "The useful questions are: what is the model, what data grounds it, what happens when it is wrong, and who is accountable."
+
+  - q: "Your organization wants employees to query 50,000 internal PDFs. Before choosing a model, the first question should be:"
+    options:
+      a: "Which model has the largest context window?"
+      b: "How will answers be grounded in and traced back to those documents?"
+      c: "Which GPU tier do we need?"
+      d: "Should we fine-tune on the PDFs?"
+    answer: b
+    why: "Grounding and citation determine whether the system is trustworthy. Model choice is a later, smaller decision."
+
+  - q: "Which statement about training versus inference is correct?"
+    options:
+      a: "Training happens every time a user sends a prompt"
+      b: "Training builds the model; inference is using the trained model to produce output"
+      c: "Inference is more computationally expensive than training"
+      d: "They are two names for the same process"
+    answer: b
+    why: "Training is the one-off, expensive learning phase. Inference is each individual use. Confusing the two leads to badly wrong cost estimates."
+
+  - q: "Does sending a prompt to a hosted LLM teach it your data?"
+    options:
+      a: "Always — every prompt becomes training data"
+      b: "No — inference does not update model weights; whether data is retained is a separate contractual question"
+      c: "Only if the conversation exceeds the context window"
+      d: "Only for open-source models"
+    answer: b
+    why: "Weights are frozen at inference. Data retention is a policy and contract matter, not a technical consequence of using the model — and the two get conflated constantly."
+
+  - q: "Which is the most defensible reason to choose a smaller model over a frontier one?"
+    options:
+      a: "Smaller models never hallucinate"
+      b: "The task is narrow and well-defined, so latency and cost matter more than peak capability"
+      c: "Smaller models are more accurate"
+      d: "Frontier models cannot be deployed in production"
+    answer: b
+    why: "Model selection is an engineering trade-off against task difficulty, latency budget and cost — not a race for the biggest number."

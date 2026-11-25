@@ -1,0 +1,88 @@
+# Gate definitions. Progress is proven by artifacts, not by the calendar.
+# A week is complete when every gate below reports pass. Nothing is time-based.
+#
+#   python tools/gate_check.py 1     -> status for week 1
+#   python tools/gate_check.py       -> status for every defined week
+
+meta:
+  series: AI Apprentice
+  pass_score: 80
+
+books:
+  1: { slug: book-1-foundations,  title: "Foundations",               weeks: [1, 2, 3, 4] }
+  2: { slug: book-2-applications, title: "Building AI Applications",  weeks: [5, 6, 7, 8] }
+  3: { slug: book-3-agents,       title: "Agents",                    weeks: [9, 10, 11, 12] }
+  4: { slug: book-4-production,   title: "Production",                weeks: [13, 14, 15, 16] }
+
+weeks:
+  - id: 1
+    title: "What is AI?"
+    book: 1
+    chapter: 1
+    gates:
+      quiz:
+        kind: quiz
+        file: curriculum/week-01/quiz.yml
+        pass_score: 80
+      scenarios:
+        kind: scenario
+        file: curriculum/week-01/scenarios.md
+        min_answered: 3
+      project:
+        kind: artifact
+        path: projects/week-01
+        requires: [README.md]
+      chapter:
+        kind: manuscript
+        path: books/book-1-foundations/manuscript/chapter-01.md
+        min_words: 2500
+
+  - id: 2
+    title: "Python for AI"
+    book: 1
+    chapter: 2
+    gates:
+      quiz:
+        kind: quiz
+        file: curriculum/week-02/quiz.yml
+        pass_score: 80
+      project:
+        kind: artifact
+        path: projects/week-02
+        requires: [README.md, requirements.txt]
+      chapter:
+        kind: manuscript
+        path: books/book-1-foundations/manuscript/chapter-02.md
+        min_words: 2500
+
+  - id: 3
+    title: "LLM Foundations"
+    book: 1
+    chapter: 3
+    gates:
+      quiz:
+        kind: quiz
+        file: curriculum/week-03/quiz.yml
+        pass_score: 80
+      chapter:
+        kind: manuscript
+        path: books/book-1-foundations/manuscript/chapter-03.md
+        min_words: 2500
+
+  - id: 4
+    title: "Prompt Engineering"
+    book: 1
+    chapter: 4
+    gates:
+      quiz:
+        kind: quiz
+        file: curriculum/week-04/quiz.yml
+        pass_score: 80
+      project:
+        kind: artifact
+        path: projects/week-04
+        requires: [README.md]
+      chapter:
+        kind: manuscript
+        path: books/book-1-foundations/manuscript/chapter-04.md
+        min_words: 2500

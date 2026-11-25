@@ -1,0 +1,10 @@
+book: 2
+slug: book-2-applications
+title: "AI Apprentice: Building AI Applications"
+subtitle: "Chatbots, Vector Search, and RAG on Azure"
+series: AI Apprentice
+weeks: [5, 6, 7, 8]
+price_usd: 29
+status: outlined
+leanpub_slug: ai-apprentice-applications
+site: https://aiapprentice.io

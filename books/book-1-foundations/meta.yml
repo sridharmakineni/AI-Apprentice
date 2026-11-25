@@ -1,0 +1,10 @@
+book: 1
+slug: book-1-foundations
+title: "AI Apprentice: Foundations"
+subtitle: "LLMs, Prompts, and Python for Microsoft Developers"
+series: AI Apprentice
+weeks: [1, 2, 3, 4]
+price_usd: 9
+status: drafting
+leanpub_slug: ai-apprentice-foundations
+site: https://aiapprentice.io

@@ -1,0 +1,85 @@
+name: week complete
+
+# Fires on the keystone event: a week-NN-complete tag. Verifies the gates really
+# are open, builds an EPUB preview of the book that week belongs to, and opens a
+# tracking issue for the publish step.
+
+on:
+  push:
+    tags: ['week-*-complete']
+
+jobs:
+  verify-and-build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r tools/requirements.txt
+
+      - name: extract week number
+        id: week
+        run: |
+          week=$(echo "${GITHUB_REF_NAME}" | sed -E 's/week-0*([0-9]+)-complete/\1/')
+          echo "number=${week}" >> $GITHUB_OUTPUT
+
+      - name: verify gates are actually open
+        run: python tools/gate_check.py ${{ steps.week.outputs.number }}
+
+      - name: resolve book
+        id: book
+        run: |
+          python - <<'EOF' >> $GITHUB_OUTPUT
+          import os, yaml
+          gates = yaml.safe_load(open("curriculum/gates.yml"))
+          week = int(os.environ["WEEK"])
+          book = next(w["book"] for w in gates["weeks"] if w["id"] == week)
+          print(f"slug={gates['books'][book]['slug']}")
+          print(f"title={gates['books'][book]['title']}")
+          EOF
+        env:
+          WEEK: ${{ steps.week.outputs.number }}
+
+      - name: build EPUB preview
+        uses: docker://pandoc/core:latest
+        with:
+          args: >-
+            --toc --toc-depth=2
+            --metadata title="AI Apprentice: ${{ steps.book.outputs.title }}"
+            -o preview.epub
+            books/${{ steps.book.outputs.slug }}/manuscript/chapter-*.md
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.book.outputs.slug }}-preview
+          path: preview.epub
+          retention-days: 30
+
+      - name: open publish checklist
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const week = '${{ steps.week.outputs.number }}';
+            const book = '${{ steps.book.outputs.title }}';
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Week ${week} complete — publish chapter`,
+              labels: ['publish'],
+              body: [
+                `All gates passed for week ${week} (${book}).`,
+                '',
+                '- [ ] Edit the chapter draft',
+                '- [ ] Auto-published to dev.to (check the run)',
+                '- [ ] Cross-post to LinkedIn (manual — no write API)',
+                '- [ ] Cross-post to Facebook (manual)',
+                '- [ ] Push manuscript to Leanpub',
+                '- [ ] Update progress badge in README',
+              ].join('\n'),
+            });

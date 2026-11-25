@@ -1,0 +1,8 @@
+# Normalize to LF in the repo so Linux CI runners see what they expect,
+# regardless of what Windows checks out locally.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.pdf binary
+*.epub binary

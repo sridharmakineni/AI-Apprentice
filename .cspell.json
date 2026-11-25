@@ -1,0 +1,12 @@
+{
+  "version": "0.2",
+  "language": "en-GB,en",
+  "words": [
+    "Leanpub", "Foundry", "Copilot", "UTORid", "Entra", "LangGraph", "CrewAI",
+    "ChromaDB", "FAISS", "embeddings", "tokenizer", "tokenizers", "RAG",
+    "Anthropic", "OpenAI", "Azure", "Kubernetes", "FastAPI", "pydantic",
+    "Makineni", "Sridhar", "devto", "frontmatter", "pandoc", "lychee",
+    "cspell", "markdownlint", "multimodal", "agentic", "chunking", "reranking"
+  ],
+  "ignorePaths": ["node_modules/**", ".git/**", "*.json", "progress.json"]
+}
