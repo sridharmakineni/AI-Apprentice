@@ -50,13 +50,22 @@ git tag week-01-complete && git push --tags   # when all gates pass
 That tag is the keystone event: it triggers the chapter build, the EPUB/PDF preview,
 and the draft publish PR.
 
-## Leanpub
+## Distribution
+
+**Undecided until Book I is finished.** Names are claimed on both Leanpub and Gumroad;
+neither is paid for. Gumroad takes ~10% and hands over buyer emails, which matters when
+Book I exists to funnel readers toward II–IV. Leanpub offers discovery and a
+buy-early-get-updates model, but its Git writing mode needs a Pro membership
+(~$216/year), so the sync below is dormant until that is worth paying for.
+
+### Leanpub sync (built, dormant)
 
 Leanpub's Git writing mode wants `manuscript/` at the root of a repository, one book
 per repo. This repo keeps manuscripts under `books/<slug>/manuscript/` so chapters sit
 beside the curriculum and gates that produce them, and
 [sync-leanpub.yml](.github/workflows/sync-leanpub.yml) bridges the two — it mirrors
-each book into a thin repo that Leanpub watches.
+each book into a thin repo that Leanpub watches. The mirror also serves a pandoc build
+if distribution goes elsewhere.
 
 **The monorepo is the source of truth. Never edit a thin repo by hand.**
 
