@@ -33,7 +33,7 @@ Most of this chapter is about being able to ask those three questions precisely.
 Four terms get used interchangeably and shouldn't be. They nest, and the nesting is
 literal rather than decorative.
 
-```
+```text
 Artificial Intelligence
   └─ Machine Learning
        └─ Deep Learning
@@ -202,7 +202,7 @@ and explain the result.
 An **agent** is a system that can reason about a goal, use tools to act, observe what
 happened, and decide what to do next. The defining feature is the loop, not the model.
 
-```
+```text
      ┌────────────────────────────┐
      ↓                            │
   observe → reason → act (tool) → observe

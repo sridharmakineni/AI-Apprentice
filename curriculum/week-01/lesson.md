@@ -29,7 +29,7 @@ By the end of the week you can, without notes:
 
 ## The hierarchy
 
-```
+```text
 Artificial Intelligence ............ any system doing things that need intelligence
   └─ Machine Learning .............. learns patterns from data instead of being told
        └─ Deep Learning ............ ML using many-layered neural networks

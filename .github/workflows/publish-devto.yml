@@ -18,6 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      # Lifted to job level so steps can test for it. The secrets context is not
+      # available in an `if:`, but the env context is.
+      DEVTO_API_KEY: ${{ secrets.DEVTO_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -25,12 +29,21 @@ jobs:
           python-version: '3.12'
       - run: pip install -r tools/requirements.txt
 
+      - name: skip when dev.to is not configured yet
+        if: env.DEVTO_API_KEY == ''
+        run: |
+          echo "### dev.to publish skipped" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "No DEVTO_API_KEY secret is set, so there is nothing to publish to." >> $GITHUB_STEP_SUMMARY
+          echo "Add one under Settings → Secrets and variables → Actions when you are" >> $GITHUB_STEP_SUMMARY
+          echo "ready to start posting chapters." >> $GITHUB_STEP_SUMMARY
+
       - name: publish changed chapters
-        env:
-          DEVTO_API_KEY: ${{ secrets.DEVTO_API_KEY }}
+        if: env.DEVTO_API_KEY != ''
         run: python tools/publish_devto.py ${{ inputs.chapter }}
 
       - name: persist article id map
+        if: env.DEVTO_API_KEY != ''
         run: |
           if ! git diff --quiet .devto-map.json; then
             git config user.name  "github-actions[bot]"

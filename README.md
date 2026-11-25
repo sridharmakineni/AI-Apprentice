@@ -30,7 +30,7 @@ Bundle: $69.
 
 ## Layout
 
-```
+```text
 curriculum/week-NN/     lesson, quiz, scenarios, assignment
 projects/week-NN/       the thing you built that week
 books/book-N-*/         Leanpub manuscript, one project per book

@@ -50,7 +50,9 @@ def check_scenario(spec, _state):
     if not path.exists():
         return FAIL, "scenarios file missing"
     blocks = re.findall(r"\*\*Your answer:\*\*\s*(.*?)(?=\n## |\Z)", path.read_text(encoding="utf-8"), flags=re.S)
-    answered = sum(1 for b in blocks if b.strip() and "_unanswered_" not in b)
+    # Match the bare word, not the marked-up form, so the gate survives a change of
+    # emphasis style in the template.
+    answered = sum(1 for b in blocks if b.strip() and "unanswered" not in b.lower())
     need = spec.get("min_answered", 1)
     verdict = PASS if answered >= need else FAIL
     return verdict, f"{answered}/{len(blocks)} answered (need {need})"

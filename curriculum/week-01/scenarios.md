@@ -3,7 +3,7 @@
 Level 2 of the review framework. The quiz checks that you know the words; these check
 that you can use them when someone asks you a real question at work.
 
-Answer in your own words, in a few sentences. Replace `_unanswered_` with your answer —
+Answer in your own words, in a few sentences. Replace `*unanswered*` with your answer —
 `gate_check.py` counts a scenario as answered once that marker is gone. **Three answered
 is the gate**, but all ten are worth doing.
 
@@ -21,7 +21,7 @@ Your director asks you privately afterwards: *is this actually AI?*
 
 What do you tell them, and what three questions would you put back to the vendor?
 
-**Your answer:** _unanswered_
+**Your answer:** *unanswered*
 
 ---
 
@@ -33,7 +33,7 @@ staff to be able to ask questions in plain English and get answers.
 Someone proposes fine-tuning a model on all 50,000 documents. What would you propose
 instead, and why is fine-tuning the wrong first instinct here?
 
-**Your answer:** _unanswered_
+**Your answer:** *unanswered*
 
 ---
 
@@ -45,7 +45,7 @@ have left?"* by reading the leave policy and the employee's leave records.
 Which part of that should the language model do, and which part should be ordinary code?
 What goes wrong if you let the model do all of it?
 
-**Your answer:** _unanswered_
+**Your answer:** *unanswered*
 
 ---
 
@@ -58,7 +58,7 @@ false — the benefit simply never came up.
 Explain to a non-technical stakeholder why this happened and what would reduce the
 chance of it happening again.
 
-**Your answer:** _unanswered_
+**Your answer:** *unanswered*
 
 ---
 
@@ -70,7 +70,7 @@ train it, so our data leaks into other people's answers."
 Where is this right, where is it wrong, and what would you actually need to check before
 approving a tool for work use?
 
-**Your answer:** _unanswered_
+**Your answer:** *unanswered*
 
 ---
 
@@ -82,7 +82,7 @@ approval process that currently routes requests by department and dollar amount.
 Where, specifically, could a model add value here — and where would adding one make the
 process worse?
 
-**Your answer:** _unanswered_
+**Your answer:** *unanswered*
 
 ---
 
@@ -94,7 +94,7 @@ eight categories: a frontier model, or a small fast one.
 Which do you pick, what would change your mind, and how would you decide rather than
 guess?
 
-**Your answer:** _unanswered_
+**Your answer:** *unanswered*
 
 ---
 
@@ -105,7 +105,7 @@ and email a summary to the sponsor every Friday."*
 
 Is this a chatbot problem, an agent problem, or neither? Justify the call.
 
-**Your answer:** _unanswered_
+**Your answer:** *unanswered*
 
 ---
 
@@ -116,7 +116,7 @@ A stakeholder asks: *"how accurate will it be?"* about a proposed document assis
 Why is that question harder to answer for a generative system than for, say, a duplicate
 invoice detector — and what would you offer to measure instead?
 
-**Your answer:** _unanswered_
+**Your answer:** *unanswered*
 
 ---
 
@@ -128,4 +128,4 @@ interview, with no human in the loop.
 What is your response? Identify the strongest technical and non-technical objections,
 and what you would propose instead.
 
-**Your answer:** _unanswered_
+**Your answer:** *unanswered*

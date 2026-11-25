@@ -47,7 +47,7 @@ You will also do exactly this at work within six months. Practise now.
 
 ## What goes in the repo
 
-```
+```text
 projects/week-01/
 ├── README.md          what the deck argues, what you got wrong first, what you'd redo
 └── what-is-ai.pptx    (or .pdf / .md — format is yours)
