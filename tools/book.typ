@@ -8,10 +8,13 @@
 //   Headings  Segoe UI Semibold     -- sans, so structure is visible at a glance
 //   Code      Cascadia Mono         -- boxed, tinted, never breaking mid-block
 
-#let accent = rgb("#1F6F8B")      // Book I. II amber, III magenta.
+#let accent = rgb("#F0B323")      // Book I. II teal, III magenta.
+#let ink = rgb("#26292B")         // full-bleed panels
+#let accent-ink = rgb("#8A6410")  // amber is unreadable as text on white;
+                                  // this is the same hue, darkened to pass contrast
 #let rule-grey = rgb("#D8DCE0")
 #let code-bg = rgb("#F6F7F9")
-#let quote-bg = rgb("#F0F6F8")
+#let quote-bg = rgb("#FDF8EC")
 
 #let conf(..args) = {
   let o = args.named()
@@ -28,8 +31,14 @@
   set page(
     paper: "us-letter",
     margin: (inside: 2.8cm, outside: 2.4cm, top: 2.6cm, bottom: 2.4cm),
-    numbering: "1",
-    number-align: center,
+    numbering: none,
+    footer: context {
+      let n = counter(page).get().at(0)
+      set text(size: 8pt, fill: rgb("#8A939C"), font: ("Segoe UI", "Calibri"))
+      grid(columns: (1fr, 1fr), align: (left, right),
+        [AI Apprentice · Foundations],
+        text(weight: "bold", fill: rgb("#4B5563"))[#n])
+    },
     header: context {
       // No running head on a chapter opening page.
       let here-page = here().page()
@@ -66,20 +75,37 @@
   // the title -- which is also what Leanpub and dev.to want.
   counter(heading.where(level: 1)).update(0)
 
+  // Full-bleed chapter opener: dark field, oversized two-tone type. Borrowed
+  // from brand handbooks, but spent only on the four opener pages -- behind
+  // 10,000 words of teaching prose it would exhaust the reader, and serif body
+  // on white is measurably better for sustained reading.
   show heading.where(level: 1): it => {
-    pagebreak(weak: true)
     counter(heading.where(level: 1)).step()
-    v(2.2cm)
-    block(breakable: false)[
-      #set text(size: 9pt, fill: accent, weight: "bold", tracking: 1.6pt)
-      #context upper("Chapter " + str(counter(heading.where(level: 1)).get().at(0)))
-      #v(0.3em)
-      #set text(size: 24pt, fill: black, weight: "bold", tracking: 0pt)
-      #it.body
-      #v(0.4em)
-      #line(length: 28%, stroke: 2.2pt + accent)
+    pagebreak(weak: true)
+    page(
+      margin: (x: 0cm, y: 0cm),
+      header: none,
+      footer: none,
+      fill: ink,
+    )[
+      #place(left + top, dx: 2.6cm, dy: 6.5cm)[
+        #set par(justify: false, leading: 0.42em)
+        #text(size: 10pt, fill: accent, weight: "bold", tracking: 3pt,
+              font: ("Segoe UI", "Calibri"))[
+          #context upper("Chapter " + str(counter(heading.where(level: 1)).get().at(0)))
+        ]
+        #v(1.1cm)
+        #block(width: 13cm)[
+          #text(size: 40pt, fill: white, weight: "bold", tracking: -0.8pt,
+                font: ("Segoe UI", "Calibri"))[#it.body#text(fill: accent)[.]]
+        ]
+      ]
+      #place(left + bottom, dx: 2.6cm, dy: -2.4cm)[
+        #text(size: 8.5pt, fill: rgb("#8A939C"), font: ("Segoe UI", "Calibri"))[
+          AI Apprentice · Foundations
+        ]
+      ]
     ]
-    v(1.0cm)
   }
 
   show heading.where(level: 2): it => {
@@ -94,7 +120,7 @@
   show heading.where(level: 3): it => {
     v(0.8em)
     block(breakable: false)[
-      #set text(size: 11.5pt, fill: accent, weight: "bold")
+      #set text(size: 11.5pt, fill: accent-ink, weight: "bold")
       #it.body
     ]
     v(0.1em)
@@ -164,41 +190,45 @@
   show table: set text(size: 9.2pt)
   show table: set par(justify: false, leading: 0.6em)
 
-  show link: set text(fill: accent)
+  show link: set text(fill: accent-ink)
   set list(indent: 0.6em, spacing: 0.75em)
   set enum(indent: 0.6em, spacing: 0.75em)
 
   // ---- title page -----------------------------------------------------
-  page(header: none, numbering: none, margin: (x: 2.8cm, y: 3.2cm))[
-    #v(3.5cm)
-    #set par(justify: false)
-    #text(size: 10pt, fill: accent, weight: "bold", tracking: 3pt,
-          font: ("Segoe UI", "Calibri"))[#upper("AI Apprentice")]
-
-    #v(0.9cm)
-    #line(length: 100%, stroke: 2.5pt + accent)
-    #v(0.7cm)
-
-    #text(size: 38pt, weight: "bold", font: ("Segoe UI", "Calibri"))[#title]
-
-    #if subtitle != none [
-      #v(0.5cm)
-      #text(size: 14pt, fill: rgb("#4B5563"), font: ("Segoe UI", "Calibri"))[#subtitle]
-    ]
-
-    #v(1fr)
-
-    #if authors.len() > 0 [
-      #text(size: 12pt, weight: "bold")[
-        #authors.map(a => if type(a) == dictionary { a.at("name", default: "") } else { a }).join(", ")
+  page(header: none, footer: none, numbering: none, margin: (x: 0cm, y: 0cm), fill: ink)[
+    #place(left + top, dx: 2.6cm, dy: 5.2cm)[
+      #set par(justify: false, leading: 0.42em)
+      #text(size: 10pt, fill: rgb("#8A939C"), weight: "bold", tracking: 3.5pt,
+            font: ("Segoe UI", "Calibri"))[#upper("AI Apprentice")]
+      #v(1.3cm)
+      #block(width: 14cm)[
+        #text(size: 54pt, fill: accent, weight: "bold", tracking: -1.5pt,
+              font: ("Segoe UI", "Calibri"))[#title#text(fill: white)[.]]
       ]
-      #v(0.2cm)
+      #v(1.0cm)
+      #block(width: 12cm)[
+        #set text(size: 14pt, fill: white, weight: "bold",
+                  font: ("Segoe UI", "Calibri"))
+        #set par(leading: 0.55em)
+        #subtitle
+      ]
     ]
-    #if date != none [
-      #text(size: 9.5pt, fill: rgb("#6B7280"))[#date]
+    #place(left + bottom, dx: 2.6cm, dy: -3.0cm)[
+      #set par(justify: false, leading: 0.5em)
+      #if authors.len() > 0 [
+        #text(size: 12pt, fill: white, weight: "bold", font: ("Segoe UI", "Calibri"))[
+          #authors.map(a => if type(a) == dictionary { a.at("name", default: "") } else { a }).join(", ")
+        ]
+        #linebreak()
+      ]
+      #if date != none [
+        #text(size: 9pt, fill: rgb("#8A939C"), font: ("Segoe UI", "Calibri"))[#date]
+        #linebreak()
+      ]
+      #text(size: 9pt, fill: rgb("#8A939C"), font: ("Segoe UI", "Calibri"))[
+        Book I of three · Draft for review
+      ]
     ]
-    #v(0.4cm)
-    #text(size: 9pt, fill: rgb("#9CA3AF"))[Book I of three · Draft for review]
   ]
 
   // ---- contents -------------------------------------------------------
