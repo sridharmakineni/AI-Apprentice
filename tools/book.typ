@@ -16,6 +16,34 @@
 #let code-bg = rgb("#F6F7F9")
 #let quote-bg = rgb("#FDF8EC")
 
+// Front-matter opener. Called from a raw typst block in front-matter.md so the
+// section gets the full-bleed treatment without an H1 -- which would otherwise
+// be numbered as a chapter.
+#let frontmatter-open(line1, line2) = {
+  pagebreak(weak: true)
+  page(margin: (x: 0cm, y: 0cm), header: none, footer: none, fill: ink)[
+    #place(left + top, dx: 2.6cm, dy: 6.5cm)[
+      #set par(justify: false, leading: 0.42em)
+      #text(size: 10pt, fill: accent, weight: "bold", tracking: 3pt,
+            font: ("Segoe UI", "Calibri"))[#upper("Introduction")]
+      #v(1.1cm)
+      #block(width: 14cm)[
+        #set par(leading: 0.34em)
+        #text(size: 40pt, fill: white, weight: "bold", tracking: -0.8pt,
+              font: ("Segoe UI", "Calibri"))[#line1]
+        #linebreak()
+        #text(size: 40pt, fill: accent, weight: "bold", tracking: -0.8pt,
+              font: ("Segoe UI", "Calibri"))[#line2]
+      ]
+    ]
+    #place(left + bottom, dx: 2.6cm, dy: -2.4cm)[
+      #text(size: 8.5pt, fill: rgb("#8A939C"), font: ("Segoe UI", "Calibri"))[
+        AI Apprentice · Foundations
+      ]
+    ]
+  ]
+}
+
 #let conf(..args) = {
   let o = args.named()
   let doc = args.pos().at(0)
@@ -236,12 +264,21 @@
   // emits its title as a level-1 heading, which the chapter rule above would
   // format as "Chapter 1: Contents" and push the numbering out by one.
   {
-    page(header: none, numbering: none)[
-      #v(1.2cm)
-      #text(size: 19pt, weight: "bold", font: ("Segoe UI", "Calibri"))[Contents]
-      #v(0.8cm)
-      #line(length: 100%, stroke: 1pt + accent)
-      #v(0.6cm)
+    page(header: none, footer: none, numbering: none, margin: (x: 0cm, y: 0cm))[
+      // Dark band across the top, so the contents page carries the same
+      // language as the title page and the chapter openers.
+      #block(width: 100%, height: 7.5cm, fill: ink)[
+        #place(left + bottom, dx: 2.6cm, dy: -1.9cm)[
+          #set par(justify: false, leading: 0.4em)
+          #text(size: 9pt, fill: accent, weight: "bold", tracking: 3pt,
+                font: ("Segoe UI", "Calibri"))[#upper("Book I")]
+          #v(0.75cm)
+          #text(size: 34pt, fill: white, weight: "bold", tracking: -0.6pt,
+                font: ("Segoe UI", "Calibri"))[Contents#text(fill: accent)[.]]
+        ]
+      ]
+      #v(1.3cm)
+      #block(inset: (x: 2.6cm))[
       #set par(justify: false)
       #show outline.entry.where(level: 1): e => {
         v(0.75em, weak: true)
@@ -249,6 +286,7 @@
       }
       #show outline.entry.where(level: 2): e => text(size: 9.5pt, fill: rgb("#4B5563"), e)
       #outline(title: none, depth: 2, indent: 1.2em)
+      ]
     ]
   }
 

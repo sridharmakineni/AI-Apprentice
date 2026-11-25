@@ -8,7 +8,7 @@
     "Makineni", "Sridhar", "devto", "frontmatter", "pandoc", "lychee",
     "cspell", "markdownlint", "multimodal", "agentic", "chunking", "reranking",
     "aiapprentice", "sridharmakineni", "overfitting", "underfitting",
-    "pretrain", "pretrained", "finetune", "timespec", "lycheeverse", "Gumroad", "pytest", "metaclasses", "pycache", "ungated", "argparse", "tokenizer", "parseable", "fstring", "Hashtable", "venv", "pathlib", "promptengineering", "tiktoken", "Wiarton"
+    "pretrain", "pretrained", "finetune", "timespec", "lycheeverse", "Gumroad", "pytest", "metaclasses", "pycache", "ungated", "argparse", "tokenizer", "parseable", "fstring", "typst", "pandoc", "Hashtable", "venv", "pathlib", "promptengineering", "tiktoken", "Wiarton"
   ],
   "ignorePaths": ["node_modules/**", ".git/**", "*.json", "progress.json"]
 }

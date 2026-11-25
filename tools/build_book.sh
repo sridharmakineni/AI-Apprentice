@@ -71,15 +71,17 @@ done < "$MANUSCRIPT/Book.txt"
 
 echo "Building \"$TITLE\" from ${#CHAPTERS[@]} chapters"
 
-# The stock template is what imports tools/book.typ; regenerate it if missing.
-[ -f "$OUT/_default.typ" ] || "$PANDOC" --print-default-template=typst > "$OUT/_default.typ"
+# tools/pandoc-typst.typ is pandoc's stock template with one line changed: it
+# imports frontmatter-open alongside conf, so front-matter.md can call it from a
+# raw typst block. If pandoc is upgraded, regenerate it with
+# --print-default-template=typst and re-apply that import.
 
 FORMAT="markdown+pipe_tables+fenced_code_blocks+backtick_code_blocks"
 
 echo "  -> PDF"
 "$PANDOC" "${CHAPTERS[@]}" \
   --from="$FORMAT" --to=pdf --pdf-engine=typst \
-  --template="$OUT/_default.typ" \
+  --template="tools/pandoc-typst.typ" \
   -V template="tools/book.typ" \
   -V title="$TITLE" \
   -V subtitle="$SUBTITLE" \
