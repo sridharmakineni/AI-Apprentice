@@ -50,6 +50,26 @@ git tag week-01-complete && git push --tags   # when all gates pass
 That tag is the keystone event: it triggers the chapter build, the EPUB/PDF preview,
 and the draft publish PR.
 
+## Leanpub
+
+Leanpub's Git writing mode wants `manuscript/` at the root of a repository, one book
+per repo. This repo keeps manuscripts under `books/<slug>/manuscript/` so chapters sit
+beside the curriculum and gates that produce them, and
+[sync-leanpub.yml](.github/workflows/sync-leanpub.yml) bridges the two — it mirrors
+each book into a thin repo that Leanpub watches.
+
+**The monorepo is the source of truth. Never edit a thin repo by hand.**
+
+One-time setup per book:
+
+1. Create the empty target repo named in that book's `meta.yml` (`leanpub_repo`)
+2. If it's private, add `leanpub` as a collaborator so Leanpub can read it
+3. Create a fine-grained PAT with **Contents: read and write** scoped to that repo
+4. Save it in this repo as the `LEANPUB_SYNC_TOKEN` secret
+5. In Leanpub, create the book in **Git/GitHub writing mode** pointed at the thin repo
+
+Until the secret exists the workflow skips with a note instead of failing.
+
 ## Status
 
 Week 1 — in progress. Nothing shipped yet.

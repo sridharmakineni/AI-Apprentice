@@ -1,0 +1,94 @@
+name: sync manuscript to Leanpub repo
+
+# Leanpub's Git writing mode requires manuscript/ at the ROOT of a repository, one
+# book per repo. This monorepo keeps each book under books/<slug>/manuscript/ so the
+# chapters live beside the curriculum and gates that produce them.
+#
+# This job bridges the two: it copies a book's manuscript into a thin per-book repo
+# with manuscript/ at the root, which is what Leanpub watches. The monorepo stays the
+# single source of truth -- never edit the thin repo by hand.
+#
+# Leanpub never commits back to your repository, so there is no conflict risk.
+
+on:
+  push:
+    branches: [main]
+    paths: ['books/*/manuscript/**']
+  workflow_dispatch:
+    inputs:
+      book:
+        description: 'Book slug to force-sync (e.g. book-1-foundations)'
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      SYNC_TOKEN: ${{ secrets.LEANPUB_SYNC_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - name: skip when the sync token is not configured
+        if: env.SYNC_TOKEN == ''
+        run: |
+          echo "### Leanpub sync skipped" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "No LEANPUB_SYNC_TOKEN secret is set, so there is nowhere to push." >> $GITHUB_STEP_SUMMARY
+          echo "See the Leanpub section of README.md for the one-time setup." >> $GITHUB_STEP_SUMMARY
+
+      - uses: actions/setup-python@v5
+        if: env.SYNC_TOKEN != ''
+        with:
+          python-version: '3.12'
+      - run: pip install -r tools/requirements.txt
+        if: env.SYNC_TOKEN != ''
+
+      - name: work out which books changed
+        if: env.SYNC_TOKEN != ''
+        id: changed
+        run: |
+          if [ -n "${{ inputs.book }}" ]; then
+            echo "slugs=${{ inputs.book }}" >> $GITHUB_OUTPUT
+          else
+            slugs=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- 'books/*/manuscript/**' \
+              | cut -d/ -f2 | sort -u | tr '\n' ' ')
+            echo "slugs=${slugs}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: push each changed manuscript to its thin repo
+        if: env.SYNC_TOKEN != '' && steps.changed.outputs.slugs != ''
+        run: |
+          set -euo pipefail
+          for slug in ${{ steps.changed.outputs.slugs }}; do
+            target=$(python -c "import yaml,sys; print(yaml.safe_load(open(f'books/${slug}/meta.yml'))['leanpub_repo'])")
+            echo "::group::${slug} -> ${target}"
+
+            rm -rf _sync
+            git clone --quiet --depth 1 \
+              "https://x-access-token:${SYNC_TOKEN}@github.com/${target}.git" _sync \
+              || { mkdir _sync && git -C _sync init --quiet -b main; }
+
+            # Replace wholesale so deletions propagate. The sidecars are dev.to
+            # metadata and have no business in a Leanpub manuscript.
+            rm -rf _sync/manuscript
+            mkdir -p _sync/manuscript
+            cp -r "books/${slug}/manuscript/." _sync/manuscript/
+            find _sync/manuscript -name '*.publish.yml' -delete
+
+            git -C _sync config user.name  "github-actions[bot]"
+            git -C _sync config user.email "github-actions[bot]@users.noreply.github.com"
+            git -C _sync add -A
+            if git -C _sync diff --cached --quiet; then
+              echo "no changes"
+            else
+              git -C _sync commit --quiet -m "sync ${slug} from ${GITHUB_SHA::7}"
+              git -C _sync push --quiet \
+                "https://x-access-token:${SYNC_TOKEN}@github.com/${target}.git" main
+              echo "pushed"
+            fi
+            echo "::endgroup::"
+          done
