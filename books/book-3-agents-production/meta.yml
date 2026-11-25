@@ -1,0 +1,11 @@
+book: 3
+slug: book-3-agents-production
+title: "AI Apprentice: Agents in Production"
+subtitle: "Tool Calling, MCP, LangGraph, and Azure AI Foundry"
+series: AI Apprentice
+weeks: [9, 10, 11, 12, 13, 14, 15, 16]
+price_usd: 39
+status: outlined
+leanpub_slug: ai-apprentice-agents-production
+site: https://aiapprentice.io
+leanpub_repo: sridharmakineni/ai-apprentice-agents-production

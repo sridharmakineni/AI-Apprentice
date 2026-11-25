@@ -23,10 +23,13 @@ days or fifteen; nothing downstream cares.
 |---|---|---|---|
 | I | 1–4 | Foundations — LLMs, Prompts, and Python for Microsoft Developers | $9 (funnel) |
 | II | 5–8 | Building AI Applications — Chatbots, Vector Search, and RAG on Azure | $29 |
-| III | 9–12 | Agents — Tool Calling, MCP, LangGraph, and CrewAI | $29 |
-| IV | 13–16 | Production — Azure AI Foundry, Copilot, and Shipping Real Systems | $29 |
+| III | 9–16 | Agents in Production — Tool Calling, MCP, LangGraph, and Azure AI Foundry | $39 |
 
 Bundle: $69.
+
+Three volumes rather than four: a four-book series is a lot to ask of a first-time
+author's readers, and agents and deployment are one arc, not two. Three also fits
+Leanpub's free tier exactly.
 
 ## Layout
 
