@@ -75,14 +75,14 @@ questions:
     answer: b
     why: "System sets persistent behaviour. User carries the request."
 
-  - q: "Using Azure OpenAI on your data, what is the system message token limit?"
+  - q: "Using Azure OpenAI on your data, what happens to a system message that exceeds the cap?"
     options:
-      a: "100 tokens"
-      b: "400 tokens"
-      c: "4,096 tokens"
-      d: "There is no limit"
+      a: "The request fails with HTTP 400"
+      b: "The excess is silently ignored, so part of your prompt does nothing"
+      c: "The message is automatically summarized"
+      d: "There is no cap on the system message"
     answer: b
-    why: "Anything beyond 400 is silently ignored -- so a long system prompt appears to work while its last half does nothing."
+    why: "Silent truncation is the trap. The cap itself is model-dependent -- 400 tokens on older models such as GPT-4-0613-8K, up to 4,000 on GPT-4o -- so check the figure for the model you actually deploy."
 
   - q: "Which instruction most reliably keeps JSON output parseable?"
     options:
