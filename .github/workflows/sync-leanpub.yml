@@ -51,13 +51,26 @@ jobs:
         if: env.SYNC_TOKEN != ''
         id: changed
         run: |
+          set -euo pipefail
           if [ -n "${{ inputs.book }}" ]; then
-            echo "slugs=${{ inputs.book }}" >> $GITHUB_OUTPUT
+            slugs="${{ inputs.book }}"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            # A manual run with no book named syncs every book that actually has
+            # chapters. Books still at the outline stage have no thin repo yet, so
+            # including them would fail the push.
+            # `if` rather than `&&` so the loop always exits 0 -- otherwise the last
+            # book having no chapters fails the whole step under `set -e`.
+            slugs=$(for d in books/*/; do
+                      if ls "${d}manuscript"/chapter-*.md >/dev/null 2>&1; then
+                        basename "$d"
+                      fi
+                    done | tr '\n' ' ')
           else
             slugs=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- 'books/*/manuscript/**' \
               | cut -d/ -f2 | sort -u | tr '\n' ' ')
-            echo "slugs=${slugs}" >> $GITHUB_OUTPUT
           fi
+          echo "syncing: ${slugs:-<nothing>}"
+          echo "slugs=${slugs}" >> $GITHUB_OUTPUT
 
       - name: push each changed manuscript to its thin repo
         if: env.SYNC_TOKEN != '' && steps.changed.outputs.slugs != ''
