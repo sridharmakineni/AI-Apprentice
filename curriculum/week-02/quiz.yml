@@ -1,0 +1,184 @@
+week: 2
+title: "Week 2 — Python for AI"
+pass_score: 80
+
+questions:
+  - q: "Which Python type maps directly to a JSON object?"
+    options:
+      a: "list"
+      b: "dict"
+      c: "tuple"
+      d: "set"
+    answer: b
+    why: "JSON objects become dicts, JSON arrays become lists. Every API response you handle is a dict, usually nested."
+
+  - q: "What does person.get('email') do that person['email'] does not?"
+    options:
+      a: "Searches nested dictionaries"
+      b: "Returns None instead of raising KeyError when the key is missing"
+      c: "Converts the value to a string"
+      d: "Checks the value is a valid email address"
+    answer: b
+    why: "Use .get() on anything from outside your program. API responses change shape, and a KeyError in production is avoidable."
+
+  - q: "What is the difference between json.load() and json.loads()?"
+    options:
+      a: "load reads a file, loads reads a string"
+      b: "load is faster for large files"
+      c: "loads validates the schema, load does not"
+      d: "They are aliases for the same function"
+    answer: a
+    why: "The s means string. The same pairing applies to dump (to a file) and dumps (to a string)."
+
+  - q: "JSON says null. What does Python call the same thing?"
+    options:
+      a: "nil"
+      b: "null"
+      c: "None"
+      d: "empty"
+    answer: c
+    why: "json.loads converts null to None automatically. Confusing the two produces unhelpful error messages."
+
+  - q: "Which expression gets the reply text from a typical chat completion response?"
+    options:
+      a: "response['content']"
+      b: "response['choices']['message']['content']"
+      c: "response['choices'][0]['message']['content']"
+      d: "response['messages'][0]['content']"
+    answer: c
+    why: "choices is a list, so you index it first. That shape -- a list of choices, each with a message -- is near universal."
+
+  - q: "What does this build?  names = [p['name'] for p in employees]"
+    options:
+      a: "A dictionary keyed by name"
+      b: "A list of the name value from each record"
+      c: "A set of unique names"
+      d: "A generator that must be converted before use"
+    answer: b
+    why: "A list comprehension. Read right to left: for each person, take their name, collect into a list."
+
+  - q: "Why turn a list of records into a dict keyed by name?"
+    options:
+      a: "It uses less memory"
+      b: "Lookup becomes instant rather than scanning every item"
+      c: "Dicts preserve order and lists do not"
+      d: "It is required before writing JSON"
+    answer: b
+    why: "Searching a list scans it. A dict lookup is effectively instant. Over thousands of records that is minutes versus hours."
+
+  - q: "Which collection type automatically discards duplicates?"
+    options:
+      a: "list"
+      b: "tuple"
+      c: "set"
+      d: "dict values"
+    answer: c
+    why: "Sets hold unique items and are unordered. Useful for deduplication, such as listing distinct departments."
+
+  - q: "In  def search(query: str, limit: int = 10) -> list[dict]:  what do the annotations do at runtime?"
+    options:
+      a: "Raise TypeError if the wrong type is passed"
+      b: "Convert arguments to the declared type"
+      c: "Nothing -- they are documentation for editors and type checkers"
+      d: "Make the function run faster"
+    answer: c
+    why: "Python does not enforce type hints. They matter because every AI SDK is annotated, and they are the fastest way to understand an unfamiliar function."
+
+  - q: "Why read a credential from os.environ rather than writing it in the file?"
+    options:
+      a: "Environment variables are encrypted"
+      b: "Code gets committed, pushed and found -- secrets in source leak"
+      c: "It is faster at runtime"
+      d: "The API rejects hard-coded keys"
+    answer: b
+    why: "This is the most common way small projects leak secrets. Secrets belong in a managed store or environment, never in the repository."
+
+  - q: "What does timeout=30 on an HTTP request prevent?"
+    options:
+      a: "Being rate limited by the API"
+      b: "A hung request blocking your program indefinitely"
+      c: "Retrying failed requests"
+      d: "Exceeding the context window"
+    answer: b
+    why: "Without a timeout you eventually get a process that never returns and no clue why."
+
+  - q: "What does response.raise_for_status() do?"
+    options:
+      a: "Retries the request on failure"
+      b: "Logs the HTTP status code"
+      c: "Turns an HTTP error response into a Python exception"
+      d: "Validates the response against a schema"
+    answer: c
+    why: "Without it a 401 sails past silently and you debug the wrong thing. Fail loudly and early."
+
+  - q: "Why does each Python project need its own virtual environment?"
+    options:
+      a: "To keep code files organized"
+      b: "To isolate library versions so projects cannot break each other"
+      c: "Because pip requires it"
+      d: "To enable type checking"
+    answer: b
+    why: "Two projects needing incompatible versions of the same package is inevitable. Isolation is what stops fixing one from breaking the other."
+
+  - q: "Which file makes your work reproducible on CI or a colleague's machine?"
+    options:
+      a: ".venv/"
+      b: "requirements.txt"
+      c: "__pycache__/"
+      d: ".env"
+    answer: b
+    why: "Commit requirements.txt. Never commit .venv or .env."
+
+  - q: "On Windows, why specify encoding='utf-8' when reading a file?"
+    options:
+      a: "It makes reading faster"
+      b: "Python defaults to a regional encoding, so accents and curly quotes raise UnicodeDecodeError"
+      c: "JSON requires it"
+      d: "It compresses the file"
+    answer: b
+    why: "The first document with an accented name or an em-dash will fail without it -- which in a Canadian organization is roughly the first document."
+
+  - q: "You get: TypeError: 'NoneType' object is not subscriptable. What likely happened?"
+    options:
+      a: "You passed a string where a number was expected"
+      b: "Something returned None and you indexed into it as if it were a dict or list"
+      c: "The JSON was malformed"
+      d: "A library is not installed"
+    answer: b
+    why: "The error appears where you USED the value, not where it went wrong. Debugging means tracing back to find what returned nothing."
+
+  - q: "ModuleNotFoundError usually means what?"
+    options:
+      a: "The module does not exist on PyPI"
+      b: "The library is not installed, or you are in the wrong virtual environment"
+      c: "You misspelled a function name"
+      d: "The Python version is too new"
+    answer: b
+    why: "Nine times out of ten the virtual environment is not activated, or the install went somewhere else."
+
+  - q: "Why should load_employees return an empty list rather than None on failure?"
+    options:
+      a: "Empty lists use less memory"
+      b: "The caller can safely loop over an empty list but would crash looping over None"
+      c: "None cannot be returned from a typed function"
+      d: "It makes the function faster"
+    answer: b
+    why: "Returning the same type on success and failure removes a whole class of downstream bug."
+
+  - q: "Why does error handling matter more when calling a model API than when reading a local file?"
+    options:
+      a: "Model APIs return more data"
+      b: "You are calling a remote, metered service that can rate limit, time out or refuse you -- these are normal conditions"
+      c: "Python handles network errors differently"
+      d: "It does not; the risk is the same"
+    answer: b
+    why: "Code that assumes the happy path works beautifully in a notebook and falls over the first week it meets real users."
+
+  - q: "A coding assistant hands you twenty lines that look correct. What is the main risk of shipping it unread?"
+    options:
+      a: "It will be slower than code you wrote yourself"
+      b: "It may call a deprecated method, embed a credential, or silently swallow an error"
+      c: "It will not have type hints"
+      d: "Licensing restrictions on generated code"
+    answer: b
+    why: "This is why reading fluency matters more than writing fluency. You need to be able to notice."

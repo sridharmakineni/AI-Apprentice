@@ -1,0 +1,184 @@
+week: 3
+title: "Week 3 — Inside the Model"
+pass_score: 80
+
+questions:
+  - q: "What is a token?"
+    options:
+      a: "One word of input text"
+      b: "A fragment of text produced by splitting on statistical boundaries"
+      c: "An API authentication credential"
+      d: "One character of input"
+    answer: b
+    why: "Common words are usually one token; unusual words fragment. Microsoft's own example: hamburger becomes ham, bur, ger."
+
+  - q: "Which input costs the most tokens for the same character count?"
+    options:
+      a: "Ordinary English prose"
+      b: "A list of GUIDs and employee IDs"
+      c: "A short common word"
+      d: "They all tokenize identically"
+    answer: b
+    why: "Identifiers and long numbers tokenize badly. Estimate cost on representative real data, never on a sentence of English."
+
+  - q: "What does the context window limit?"
+    options:
+      a: "How much the model can remember between sessions"
+      b: "Prompt plus generated response, counted together, in a single request"
+      c: "The number of requests per minute"
+      d: "The size of the model's training data"
+    answer: b
+    why: "It is the size of a single request, not a memory allowance."
+
+  - q: "A chatbot appears to remember what you said five turns ago. What is actually happening?"
+    options:
+      a: "The model stores conversation state server-side"
+      b: "The application resends the entire conversation with each new message"
+      c: "The model was fine-tuned on the conversation"
+      d: "The context is cached in the model weights"
+    answer: b
+    why: "Models are stateless. Nothing persisted on the model's side -- the application kept the history and sent it again."
+
+  - q: "What follows from statelessness for a long conversation?"
+    options:
+      a: "Cost stays flat because each message is one call"
+      b: "Cost and latency grow as the conversation lengthens"
+      c: "Accuracy improves with every turn"
+      d: "The model learns your preferences"
+    answer: b
+    why: "Turn 20 resends turns 1 through 19. Chat gets more expensive per message the longer the session runs."
+
+  - q: "Why not simply put all 50,000 company PDFs in the prompt?"
+    options:
+      a: "The model would refuse the request"
+      b: "Even if they fit, you pay to resend them on every single question"
+      c: "PDFs cannot be tokenized"
+      d: "It would exceed the training data limit"
+    answer: b
+    why: "The economic reality, more than any technical limit, is why retrieval exists."
+
+  - q: "A 128K-token context window means you should:"
+    options:
+      a: "Fill it, since capacity is available"
+      b: "Treat it as a useful ceiling, not a strategy"
+      c: "Stop using retrieval entirely"
+      d: "Expect lower cost per request"
+    answer: b
+    why: "You pay for all of it on every call, attention is weaker in the middle of long contexts, and latency scales with input."
+
+  - q: "What does temperature control?"
+    options:
+      a: "How fast the model responds"
+      b: "How the probability distribution over next tokens is sampled"
+      c: "The size of the context window"
+      d: "How much the model charges per token"
+    answer: b
+    why: "Low temperature consistently picks high-probability tokens. High temperature introduces variation."
+
+  - q: "You are classifying support emails into eight categories. What temperature?"
+    options:
+      a: "1.0 — you want the model to consider alternatives"
+      b: "0.7 — the SDK default is well chosen"
+      c: "0 — the task has a right answer and must be testable"
+      d: "It makes no difference for classification"
+    answer: c
+    why: "Variation is pure downside when there is a correct answer, and you cannot test a system that differs each run."
+
+  - q: "Does temperature 0 guarantee byte-identical output every time?"
+    options:
+      a: "Yes, it is fully deterministic"
+      b: "No -- floating-point behaviour, model updates and infrastructure changes can shift results"
+      c: "Only for prompts under 100 tokens"
+      d: "Only when streaming is disabled"
+    answer: b
+    why: "Near-deterministic, not guaranteed. Never build anything requiring identical responses across time."
+
+  - q: "What is the practical advice about temperature and top_p?"
+    options:
+      a: "Always tune both together"
+      b: "Adjust one or the other, not both -- convention is temperature"
+      c: "top_p replaces temperature in modern models"
+      d: "Set both to 0 for production"
+    answer: b
+    why: "They interact in ways that make results hard to reason about. Change one, leave the other at its default."
+
+  - q: "What is an embedding?"
+    options:
+      a: "A compressed copy of a document"
+      b: "A vector of floats where distance correlates with semantic similarity"
+      c: "A cached model response"
+      d: "A fine-tuned version of a model"
+    answer: b
+    why: "Text becomes a position in high-dimensional space such that similar meanings land near each other."
+
+  - q: "Why does vector search find 'Vacation Entitlement' when you search 'time off policy'?"
+    options:
+      a: "It uses synonym dictionaries"
+      b: "The two phrases sit close together in the embedding space despite sharing no words"
+      c: "The documents were manually tagged"
+      d: "It performs a fuzzy string match"
+    answer: b
+    why: "Keyword search finds nothing here -- zero words in common. Semantic proximity is the whole point."
+
+  - q: "Why is cosine similarity preferred over straight-line distance for comparing documents?"
+    options:
+      a: "It is faster to compute"
+      b: "It measures the angle, so document length does not distort the comparison"
+      c: "It always returns a value between 0 and 1"
+      d: "It works with sparse vectors only"
+    answer: b
+    why: "A long document and a short query can be far apart by Euclidean distance purely because of length, while pointing the same direction."
+
+  - q: "What is the maximum input length for current Azure OpenAI embedding models?"
+    options:
+      a: "512 tokens"
+      b: "4,096 tokens"
+      c: "8,192 tokens"
+      d: "128,000 tokens"
+    answer: c
+    why: "Longer documents must be split first -- which is why chunking is a real topic rather than an afterthought."
+
+  - q: "Your embedding request returns HTTP 400 although every input is under 8,192 tokens. Why?"
+    options:
+      a: "The model deployment does not exist"
+      b: "The aggregate across all inputs exceeded the 300,000-token request limit"
+      c: "Your API key expired"
+      d: "The inputs contained non-English text"
+    answer: b
+    why: "Each item fine, batch not. This catches people batching for efficiency. Split large batches."
+
+  - q: "In an Azure OpenAI call, what goes in the model parameter?"
+    options:
+      a: "The Microsoft model name, such as text-embedding-3-small"
+      b: "Your deployment name, which you chose"
+      c: "The resource group name"
+      d: "The API version"
+    answer: b
+    why: "You deploy a model and name the deployment. API calls reference your name. A 404 here almost always means someone passed the model name."
+
+  - q: "You are authenticated but get HTTP 403. What is the usual cause?"
+    options:
+      a: "The token expired"
+      b: "Missing the Cognitive Services OpenAI User role on the resource"
+      c: "The deployment name is wrong"
+      d: "You exceeded tokens per minute"
+    answer: b
+    why: "401 is authentication, 403 is authorization. 403 means you are who you say you are but lack the role."
+
+  - q: "How should production code treat HTTP 429?"
+    options:
+      a: "As a fatal error and stop"
+      b: "As expected behaviour of a metered service -- back off and retry"
+      c: "By switching to a different model"
+      d: "By ignoring it and resending immediately"
+    answer: b
+    why: "Treating rate limits as exceptional is how a system works perfectly in testing and fails on launch day."
+
+  - q: "When should you NOT use streaming?"
+    options:
+      a: "When a human is reading the output as it appears"
+      b: "When your code will parse the result"
+      c: "When the response is long"
+      d: "When latency matters"
+    answer: b
+    why: "You would reassemble a complete response from fragments for no benefit, and it complicates error handling."
