@@ -35,7 +35,7 @@ $endif$
 
 $endif$
 $if(template)$
-#import "$template$": conf, frontmatter-open
+#import "$template$": conf
 $else$
 $template.typst()$
 $endif$

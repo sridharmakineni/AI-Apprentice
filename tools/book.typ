@@ -16,34 +16,6 @@
 #let code-bg = rgb("#F6F7F9")
 #let quote-bg = rgb("#FDF8EC")
 
-// Front-matter opener. Called from a raw typst block in front-matter.md so the
-// section gets the full-bleed treatment without an H1 -- which would otherwise
-// be numbered as a chapter.
-#let frontmatter-open(line1, line2) = {
-  pagebreak(weak: true)
-  page(margin: (x: 0cm, y: 0cm), header: none, footer: none, fill: ink)[
-    #place(left + top, dx: 2.6cm, dy: 6.5cm)[
-      #set par(justify: false, leading: 0.42em)
-      #text(size: 10pt, fill: accent, weight: "bold", tracking: 3pt,
-            font: ("Segoe UI", "Calibri"))[#upper("Introduction")]
-      #v(1.1cm)
-      #block(width: 14cm)[
-        #set par(leading: 0.34em)
-        #text(size: 40pt, fill: white, weight: "bold", tracking: -0.8pt,
-              font: ("Segoe UI", "Calibri"))[#line1]
-        #linebreak()
-        #text(size: 40pt, fill: accent, weight: "bold", tracking: -0.8pt,
-              font: ("Segoe UI", "Calibri"))[#line2]
-      ]
-    ]
-    #place(left + bottom, dx: 2.6cm, dy: -2.4cm)[
-      #text(size: 8.5pt, fill: rgb("#8A939C"), font: ("Segoe UI", "Calibri"))[
-        AI Apprentice · Foundations
-      ]
-    ]
-  ]
-}
-
 #let conf(..args) = {
   let o = args.named()
   let doc = args.pos().at(0)
@@ -108,7 +80,11 @@
   // 10,000 words of teaching prose it would exhaust the reader, and serif body
   // on white is measurably better for sustained reading.
   show heading.where(level: 1): it => {
-    counter(heading.where(level: 1)).step()
+    // Markdown `# Title {-}` reaches typst as numbering: none. Front matter uses
+    // that, so it gets the same full-bleed opener and a level-1 contents entry
+    // without being counted as a chapter.
+    let is-chapter = it.numbering != none
+    if is-chapter { counter(heading.where(level: 1)).step() }
     pagebreak(weak: true)
     page(
       margin: (x: 0cm, y: 0cm),
@@ -120,7 +96,13 @@
         #set par(justify: false, leading: 0.42em)
         #text(size: 10pt, fill: accent, weight: "bold", tracking: 3pt,
               font: ("Segoe UI", "Calibri"))[
-          #context upper("Chapter " + str(counter(heading.where(level: 1)).get().at(0)))
+          #context {
+            if is-chapter {
+              upper("Chapter " + str(counter(heading.where(level: 1)).get().at(0)))
+            } else {
+              upper("Introduction")
+            }
+          }
         ]
         #v(1.1cm)
         #block(width: 13cm)[
